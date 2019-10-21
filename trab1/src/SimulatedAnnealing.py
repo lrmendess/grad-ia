@@ -1,4 +1,5 @@
 from math import exp
+from time import time
 from random import uniform
 from Utils import Valor, Tamanho, EhValido, VizinhoAleatorio
 
@@ -8,9 +9,12 @@ def AceitaPior(pior, melhor, temperatura):
     return probabilidade > uniform(0, 1)
 
 def SimulatedAnnealing(t, vt, iteracoes, temperatura, alpha):
+    tempo = time()
+    
+    estado = [0] * len(vt)
     aux = [0] * len(vt)
 
-    while temperatura > 0.1:
+    while temperatura > 0.1 and (time() - tempo) < 120.0:
         for _ in range(iteracoes):
             vizinho = VizinhoAleatorio(aux)
 
@@ -27,8 +31,10 @@ def SimulatedAnnealing(t, vt, iteracoes, temperatura, alpha):
                 aux = vizinho
         
         temperatura *= alpha
+
+    tempo = time() - tempo
     
-    return estado, Valor(estado, vt), Tamanho(estado, vt)
+    return estado, Valor(estado, vt), Tamanho(estado, vt), tempo
 
 ''' MAIN '''
 if __name__ == '__main__':

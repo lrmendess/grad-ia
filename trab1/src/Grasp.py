@@ -1,6 +1,5 @@
-from random import choice, uniform
-from DeepestDescent import DeepestDescent
-from Utils import Valor, Tamanho, EhValido, VizinhosPositivos
+from random import choice, uniform, randint, shuffle, sample
+from Utils import Valor, Tamanho, EhValido, VizinhosPositivos, EstadoAleatorio
 
 def GreedyRandomConstruct(t, vt, m):
     greedy = HillClimbing(t, vt, m)
@@ -45,6 +44,25 @@ def Roleta(estados, vt, m):
             return individuo[1]
 
     return choice(estados)
+
+def DeepestDescent(t, vt, inicio):
+    estado = inicio
+
+    while True:
+        vizinhos = VizinhosPositivos(estado)
+        vizinhos = list(filter(lambda e: EhValido(e, t, vt), vizinhos))
+
+        continuar = False
+
+        for vizinho in vizinhos:
+            if Valor(vizinho, vt) > Valor(estado, vt):
+                estado = vizinho
+                continuar = True
+
+        if not continuar:
+            break
+
+    return estado, Valor(estado, vt), Tamanho(estado, vt)
 
 def Grasp(t, vt, iteracoes, m):
     estado = [0] * len(vt)
