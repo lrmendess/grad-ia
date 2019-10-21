@@ -8,13 +8,16 @@ def AceitaPior(pior, melhor, temperatura):
 
     return probabilidade > uniform(0, 1)
 
-def SimulatedAnnealing(t, vt, iteracoes, temperatura, alpha):
+def SimulatedAnnealing(t, vt, tempo_limite, iteracoes, temperatura, alpha):
     tempo = time()
     
     estado = [0] * len(vt)
     aux = [0] * len(vt)
 
-    while temperatura > 0.1 and (time() - tempo) < 120.0:
+    while temperatura > 0.1:
+        if (time() - tempo) >= tempo_limite:
+            break
+
         for _ in range(iteracoes):
             vizinho = VizinhoAleatorio(aux)
 
@@ -43,6 +46,7 @@ if __name__ == '__main__':
     iteracoes = 20
     temperatura = 200
     alpha = 0.05
+    tempo_limite = 5.0
     
-    resultado = SimulatedAnnealing(t, vt, iteracoes, temperatura, alpha)
+    resultado = SimulatedAnnealing(t, vt, tempo_limite, iteracoes, temperatura, alpha)
     print(resultado)

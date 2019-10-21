@@ -2,7 +2,7 @@ from time import time
 from queue import Queue
 from Utils import Valor, Tamanho, EhValido, VizinhosPositivos
 
-def BeamSearch(t, vt, m):
+def BeamSearch(t, vt, tempo_limite, m):
     tempo = time()
 
     estado = [0] * len(vt)
@@ -10,7 +10,10 @@ def BeamSearch(t, vt, m):
     fila = Queue()
     fila.put(estado)
 
-    while (time() - tempo) < 120.0:
+    while True:
+        if (time() - tempo) >= tempo_limite:
+            break
+
         expandidos = []
 
         for _ in range(fila.qsize()):
@@ -37,6 +40,7 @@ if __name__ == '__main__':
     vt = [(1, 3), (4, 6), (5, 7)]
     t = 19
     m = 2
+    tempo_limite = 5.0
     
-    resultado = BeamSearch(t, vt, m)
+    resultado = BeamSearch(t, vt, tempo_limite, m)
     print(resultado)

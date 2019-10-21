@@ -12,6 +12,6 @@ resultados.write("nome;m;tempo;estado;valor;tamanho\n")
 for m in parametros_m:
     for entrada in entradas:
         nome, t, vt = entrada["nome"], int(entrada["t"]), eval(entrada["vt"])
-        estado, valor, tamanho, tempo = BeamSearch(t, vt, m)
+        estado, valor, tamanho, tempo = BeamSearch(t, vt, 120, m)
         
         resultados.write(f"{nome};{m};{tempo};{estado};{valor};{tamanho}\n")

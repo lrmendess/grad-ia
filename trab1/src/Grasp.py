@@ -1,3 +1,4 @@
+from time import time
 from random import choice, uniform, randint, shuffle, sample
 from Utils import Valor, Tamanho, EhValido, VizinhosPositivos, EstadoAleatorio
 
@@ -15,14 +16,13 @@ def HillClimbing(t, vt, m):
         if len(vizinhos) <= 0:
             break
 
-        estado = Roleta(vizinhos, vt, m)
+        vizinhos.sort(key = lambda e: Valor(e, vt), reverse=True)
+        
+        estado = Roleta(vizinhos[:m], vt)
 
     return estado, Valor(estado, vt), Tamanho(estado, vt)
 
-def Roleta(estados, vt, m):
-    estados.sort(key = lambda e: Valor(e, vt), reverse=True)
-    estados = estados[:m]
-
+def Roleta(estados, vt):
     maximo = sum([Valor(e, vt) for e in estados])
     
     if maximo == 0:
@@ -64,10 +64,15 @@ def DeepestDescent(t, vt, inicio):
 
     return estado, Valor(estado, vt), Tamanho(estado, vt)
 
-def Grasp(t, vt, iteracoes, m):
+def Grasp(t, vt, tempo_limite, iteracoes, m):
+    tempo = time()
+
     estado = [0] * len(vt)
 
     for _ in range(iteracoes):
+        if (time() - tempo) >= tempo_limite:
+            break
+
         candidato = GreedyRandomConstruct(t, vt, m)
         candidato = DeepestDescent(t, vt, candidato)
 
@@ -75,7 +80,9 @@ def Grasp(t, vt, iteracoes, m):
         if candidato[1] > Valor(estado, vt):
             estado = candidato[0]
 
-    return estado, Valor(estado, vt), Tamanho(estado, vt)
+    tempo = time() - tempo
+
+    return estado, Valor(estado, vt), Tamanho(estado, vt), tempo
 
 ''' MAIN '''
 if __name__ == '__main__':
@@ -83,6 +90,7 @@ if __name__ == '__main__':
     t = 19
     iteracoes = 5
     m = 2
+    tempo_limite = 5.0
     
-    resultado = Grasp(t, vt, iteracoes, m)
+    resultado = Grasp(t, vt, tempo_limite, iteracoes, m)
     print(resultado)

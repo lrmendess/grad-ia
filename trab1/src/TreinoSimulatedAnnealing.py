@@ -16,6 +16,6 @@ for to in parametros_to:
         for iteracoes in parametros_iteracoes:
             for entrada in entradas:
                 nome, t, vt = entrada["nome"], int(entrada["t"]), eval(entrada["vt"])
-                estado, valor, tamanho, tempo = SimulatedAnnealing(t, vt, iteracoes, to, alpha)
+                estado, valor, tamanho, tempo = SimulatedAnnealing(t, vt, 120, iteracoes, to, alpha)
 
                 resultados.write(f"{nome};{to};{alpha};{iteracoes};{tempo};{estado};{valor};{tamanho}\n")
