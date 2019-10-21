@@ -1,13 +1,16 @@
-from Utils import Valor, Tamanho, EhValido, VizinhosPositivos
+from time import time
 from queue import Queue
+from Utils import Valor, Tamanho, EhValido, VizinhosPositivos
 
 def BeamSearch(t, vt, m):
+    tempo = time()
+
     estado = [0] * len(vt)
 
     fila = Queue()
     fila.put(estado)
 
-    while True:
+    while (time() - tempo) < 120.0:
         expandidos = []
 
         for _ in range(fila.qsize()):
@@ -25,7 +28,9 @@ def BeamSearch(t, vt, m):
 
     estado = melhores[0]
 
-    return estado, Valor(estado, vt), Tamanho(estado, vt)
+    tempo = time() - tempo
+
+    return estado, Valor(estado, vt), Tamanho(estado, vt), tempo
 
 ''' MAIN '''
 if __name__ == '__main__':
