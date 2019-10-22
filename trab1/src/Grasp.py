@@ -2,59 +2,115 @@ from time import time
 from random import choice, uniform, randint, shuffle, sample
 from Utils import Valor, Tamanho, EhValido, VizinhosPositivos
 
-def GreedyRandomConstruct(t, vt, m):
-    greedy = HillClimbing(t, vt, m)
+def GreedyRandomConstruct(t, vt, m, tempo, tempo_limite):
+    greedy = HillClimbing(t, vt, m, tempo, tempo_limite)
     return greedy[0]
 
-def HillClimbing(t, vt, m):
+def HillClimbing(t, vt, m, tempo, tempo_limite):
     estado = [0] * len(vt)
 
     while Tamanho(estado, vt) < (t // 2):
+        # TIMER CHECK
+        if (time() - tempo) >= tempo_limite:
+            break
+
         vizinhos = VizinhosPositivos(estado)
+
+        # TIMER CHECK
+        if (time() - tempo) >= tempo_limite:
+            break
+
         vizinhos = list(filter(lambda e: EhValido(e, t, vt), vizinhos))
         
+        # TIMER CHECK
+        if (time() - tempo) >= tempo_limite:
+            break
+
         if len(vizinhos) <= 0:
             break
 
         vizinhos.sort(key = lambda e: Valor(e, vt), reverse=True)
+
+        # TIMER CHECK
+        if (time() - tempo) >= tempo_limite:
+            break
         
-        estado = Roleta(vizinhos[:m], vt)
+        estado = Roleta(vizinhos[:m], vt, tempo, tempo_limite)
+
+        # TIMER CHECK
+        if (time() - tempo) >= tempo_limite:
+            break
 
     return estado, Valor(estado, vt), Tamanho(estado, vt)
 
-def Roleta(estados, vt):
+def Roleta(estados, vt, tempo, tempo_limite):
     maximo = sum([Valor(e, vt) for e in estados])
     
-    if maximo == 0:
-        return estados
+    # TIMER CHECK
+    if (time() - tempo) >= tempo_limite:
+        return choice(estados)
 
     razoes = [(Valor(e, vt) / maximo, e) for e in estados]
+
+    # TIMER CHECK
+    if (time() - tempo) >= tempo_limite:
+        return choice(estados)
+
     razoes.sort(key = lambda r: r[0], reverse = True)
+        
+    # TIMER CHECK
+    if (time() - tempo) >= tempo_limite:
+        return choice(estados)
     
     roleta, soma = [], 0
     
     for individuo in razoes:
+        # TIMER CHECK
+        if (time() - tempo) >= tempo_limite:
+            return choice(estados)
+
         soma += individuo[0]
         roleta.append((soma, individuo[1]))
             
     probabilidade = uniform(0, 1)
 
     for individuo in roleta:
+        # TIMER CHECK
+        if (time() - tempo) >= tempo_limite:
+            return choice(roleta)[1]
+
         if probabilidade <= individuo[0]:
             return individuo[1]
 
     return choice(estados)
 
-def DeepestDescent(t, vt, inicio):
+def DeepestDescent(t, vt, inicio, tempo, tempo_limite):
     estado = inicio
 
     while True:
+        # TIMER CHECK
+        if (time() - tempo) >= tempo_limite:
+            break
+
         vizinhos = VizinhosPositivos(estado)
+
+        # TIMER CHECK
+        if (time() - tempo) >= tempo_limite:
+            break
+
         vizinhos = list(filter(lambda e: EhValido(e, t, vt), vizinhos))
+
+        # TIMER CHECK
+        if (time() - tempo) >= tempo_limite:
+            break
 
         continuar = False
 
         for vizinho in vizinhos:
+            # TIMER CHECK
+            if (time() - tempo) >= tempo_limite:
+                break
+
             if Valor(vizinho, vt) > Valor(estado, vt):
                 estado = vizinho
                 continuar = True
@@ -70,13 +126,18 @@ def Grasp(t, vt, tempo_limite, iteracoes, m):
     estado = [0] * len(vt)
 
     for _ in range(iteracoes):
+        # TIMER CHECK
         if (time() - tempo) >= tempo_limite:
             break
 
-        candidato = GreedyRandomConstruct(t, vt, m)
-        candidato = DeepestDescent(t, vt, candidato)
+        candidato = GreedyRandomConstruct(t, vt, m, tempo, tempo_limite)
 
-        # candidato (estado, valor, tamanho)
+        # TIMER CHECK
+        if (time() - tempo) >= tempo_limite:
+            break
+
+        candidato = DeepestDescent(t, vt, candidato, tempo, tempo_limite)
+
         if candidato[1] > Valor(estado, vt):
             estado = candidato[0]
 

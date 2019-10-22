@@ -16,6 +16,6 @@ for tamanho_populacao in parametros_tamanho_populacao:
         for taxa_mutacao in parametros_taxa_mutacao:
             for entrada in entradas:
                 nome, t, vt = entrada["nome"], int(entrada["t"]), eval(entrada["vt"])
-                estado, valor, tamanho, tempo = Genetic(t, vt, 120, 1000, tamanho_populacao, taxa_crossover, taxa_mutacao)
+                estado, valor, tamanho, tempo = Genetic(t, vt, 2, 10, tamanho_populacao, taxa_crossover, taxa_mutacao)
 
                 resultados.write(f"{nome};{tamanho_populacao};{taxa_crossover};{taxa_mutacao};{tempo};{estado};{valor};{tamanho}\n")

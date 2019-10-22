@@ -1,4 +1,5 @@
 from math import ceil
+from time import time
 from random import sample, randint
 
 def Tamanho(estado, vt):
@@ -55,7 +56,35 @@ def VizinhoAleatorio(estado):
 
     return vizinhos[indice]
 
-def EstadoAleatorio(t, vt):
+def Arredonda(num):
+    if num < 1:
+        return 1
+    
+    return ceil(num)
+
+def EstadoAleatorio(t, vt, tempo, tempo_limite):
+    maximos = list(map(lambda e: Arredonda((t / e[1]) * 0.1), vt))
+
+    estado = [0] * len(vt)
+
+    while True:
+        # TIMER CHECK
+        if (time() - tempo) >= tempo_limite:
+            break
+
+        for i in range(len(vt)):
+            estado[i] = randint(0, maximos[i])
+
+        if EhValido(estado, t, vt) and Tamanho(estado, vt) > 0:
+            break
+
+        estado = [0] * len(vt)
+
+    return estado
+
+def EstadoAleatorio2(t, vt):
+    # tempo = time()
+
     maximo = max(vt, key = lambda e: t / e[1])
     maximo = ceil(t / maximo[1])
 
@@ -63,5 +92,7 @@ def EstadoAleatorio(t, vt):
 
     while not EhValido(estado, t, vt):
         estado = sample(range(maximo), len(vt))
+
+    # print(time() - tempo)
 
     return estado
