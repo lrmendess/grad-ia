@@ -14,6 +14,6 @@ for iteracoes in parametros_iteracoes:
     for m in parametros_m:
         for entrada in entradas:
             nome, t, vt = entrada["nome"], int(entrada["t"]), eval(entrada["vt"])
-            estado, valor, tamanho, tempo = Grasp(t, vt, 1, iteracoes, m)
+            estado, valor, tamanho, tempo = Grasp(t, vt, 120, iteracoes, m)
 
             resultados.write(f"{nome};{iteracoes};{m};{tempo};{estado};{valor};{tamanho}\n")
