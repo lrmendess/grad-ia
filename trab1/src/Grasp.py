@@ -1,6 +1,6 @@
 from time import time
 from random import choice, uniform, randint, shuffle, sample
-from Utils import Valor, Tamanho, EhValido, VizinhosPositivos, EstadoAleatorio
+from Utils import Valor, Tamanho, EhValido, VizinhosPositivos
 
 def GreedyRandomConstruct(t, vt, m):
     greedy = HillClimbing(t, vt, m)
