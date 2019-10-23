@@ -81,18 +81,3 @@ def EstadoAleatorio(t, vt, tempo, tempo_limite):
         estado = [0] * len(vt)
 
     return estado
-
-def EstadoAleatorio2(t, vt):
-    # tempo = time()
-
-    maximo = max(vt, key = lambda e: t / e[1])
-    maximo = ceil(t / maximo[1])
-
-    estado = sample(range(maximo), len(vt))
-
-    while not EhValido(estado, t, vt):
-        estado = sample(range(maximo), len(vt))
-
-    # print(time() - tempo)
-
-    return estado
