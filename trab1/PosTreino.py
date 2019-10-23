@@ -1,68 +1,101 @@
+import sys
+import pandas as pd
+import seaborn as sns
+import matplotlib.pyplot as plt
+
 from csv import DictReader
 from statistics import mean
 
-def MaiorValor(problema_dict):
-    maior = map(lambda e: e['valor'], problema_dict)
-    maior = max(maior)
-
-    return maior
-
-with open('resultados/beamsearch.csv') as arquivo_csv:
-    beam_search = list(DictReader(arquivo_csv, delimiter=';'))
+def HiperResultados(nome_arquivo, hiperparametros):
+    with open(nome_arquivo) as arquivo_csv:
+        resultados_teste = list(DictReader(arquivo_csv, delimiter=';'))
 
     # GROUP BY PROBLEMAS
-    bs_problemas = {}
+    problemas = {}
 
-    for linha in beam_search:
-        nome, valor = linha['nome'], float(linha['valor'])
-
-        chave = f"{linha['m']}"
-
-        if nome not in bs_problemas:
-            bs_problemas[nome] = list()
+    for linha in resultados_teste:
+        nome, valor, tempo = linha['nome'], float(linha['valor']), float(linha['tempo'])
         
-        bs_problemas[nome].append({'chave': chave, 'valor': valor})
+        chave = [linha[p] for p in hiperparametros]
+        chave = ';'.join(chave)
+
+        if nome not in problemas:
+            problemas[nome] = list()
+        
+        problemas[nome].append({'chave': chave, 'valor': valor, 'tempo': tempo})
+    
 
     # NORMALIZACAO
-    for k, v in bs_problemas.items():
-        maior = MaiorValor(v)
+    for k, v in problemas.items():
+        maior = map(lambda e: e['valor'], v)
+        maior = max(maior)
 
         for i in range(len(v)):
-            bs_problemas[k][i]['normal'] = v[i]['valor'] / maior
+            problemas[k][i]['normal'] = v[i]['valor'] / maior
 
     # GROUP BY HIPERPARAMETROS
-    bs_parametros = {}
+    parametros = {}
 
-    for linha in beam_search:
-        chave = f"{linha['m']}"
+    for linha in resultados_teste:
+        chave = [linha[p] for p in hiperparametros]
+        chave = ';'.join(chave)
 
         resultados = list()
 
-        for _, v in bs_problemas.items():
+        for _, v in problemas.items():
             filtro = filter(lambda e: e['chave'] == chave, v)
-            mapeamento = map(lambda e: e['normal'], filtro)
+            mapeamento = map(lambda e: (e['normal'], e['tempo']), filtro)
             resultados.extend(mapeamento)
 
-        if chave not in bs_parametros:
-            bs_parametros[chave] = resultados
+        if chave not in parametros:
+            parametros[chave] = resultados
 
+    return parametros
+
+def MediasHiperparametros(parametros):
     # MEDIAS DAS NORMALIZACOES
-    bs_medias = {}
+    medias = {}
     
-    for k, v in bs_parametros.items():
-        bs_medias[k] = mean(v)
+    for k, v in parametros.items():
+        normalizados = map(lambda e: e[0], v)
+        medias[k] = mean(normalizados)
+
+    return medias
+
+def MelhorCombinacaoHiperparametros(parametros):
+    medias = MediasHiperparametros(parametros)
 
     # MELHOR HIPERPARAMETRO
-    melhor_combinacao = max(bs_medias.items(), key=lambda e: e[1])
+    melhor_combinacao = max(medias.items(), key=lambda e: e[1])
 
-    m = melhor_combinacao[0]
+    return melhor_combinacao[0]
 
-    print(m)
+algoritmos = {
+    'BS': HiperResultados('resultados/beamsearch.csv', ['m']),
+    'SA': HiperResultados('resultados/simulatedannealing.csv', ['to', 'alpha', 'iteracoes']),
+    'GE': HiperResultados('resultados/genetic.csv', ['tamanho_populacao', 'taxa_crossover', 'taxa_mutacao']),
+    'GR': HiperResultados('resultados/grasp.csv', ['iteracoes', 'm'])
+}
 
-simulated_annealing_file = open('resultados/simulatedannealing.csv')
-genetic_file = open('resultados/genetic.csv')
-grasp_file = open('resultados/grasp.csv')
+algoritmo = algoritmos[sys.argv[1]]
 
-simulated_annealing = list(DictReader(simulated_annealing_file, ';'))
-genetic = list(DictReader(genetic_file, ';'))
-grasp = list(DictReader(grasp_file, ';'))
+ordenado = list(MediasHiperparametros(algoritmo).items())
+ordenado.sort(key=lambda e: e[1], reverse=True)
+ordenado = ordenado[:10]
+
+frame_normalizado = pd.DataFrame()
+for each in ordenado:
+    k = each[0]
+    frame_normalizado[k] = list(map(lambda e: e[0], algoritmo[k]))
+
+sns.boxplot(data=frame_normalizado)
+plt.show()
+
+# TODO ORDENAR POR TEMPO E REDUZIR A 10
+
+frame_tempo = pd.DataFrame()
+for k, v in algoritmo.items():
+    frame_tempo[k] = list(map(lambda e: e[1], v))
+
+sns.boxplot(data=frame_tempo)
+plt.show()
