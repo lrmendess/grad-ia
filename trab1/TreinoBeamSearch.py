@@ -6,7 +6,7 @@ parametros_m = [10, 25, 50, 100]
 treino_csv = open("problemas/treino.csv")
 entradas = list(DictReader(treino_csv, delimiter=";"))
 
-resultados = open("resultados/beamsearch.csv", "w")
+resultados = open("resultados/treino_beamsearch.csv", "w")
 resultados.write("nome;m;tempo;estado;valor;tamanho\n")
 
 for m in parametros_m:

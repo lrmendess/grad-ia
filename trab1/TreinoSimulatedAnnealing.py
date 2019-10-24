@@ -8,7 +8,7 @@ parametros_iteracoes = [350, 500]
 treino_csv = open("problemas/treino.csv")
 entradas = list(DictReader(treino_csv, delimiter=";"))
 
-resultados = open("resultados/simulatedannealing.csv", "w")
+resultados = open("resultados/treino_simulatedannealing.csv", "w")
 resultados.write("nome;to;alpha;iteracoes;tempo;estado;valor;tamanho\n")
 
 for to in parametros_to:

@@ -7,7 +7,7 @@ parametros_m = [2, 5, 10, 15]
 treino_csv = open("problemas/treino.csv")
 entradas = list(DictReader(treino_csv, delimiter=";"))
 
-resultados = open("resultados/grasp.csv", "w")
+resultados = open("resultados/treino_grasp.csv", "w")
 resultados.write("nome;iteracoes;m;tempo;estado;valor;tamanho\n")
 
 for iteracoes in parametros_iteracoes:

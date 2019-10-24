@@ -8,7 +8,7 @@ parametros_taxa_mutacao = [0.10, 0.20, 0.30]
 treino_csv = open("problemas/treino.csv")
 entradas = list(DictReader(treino_csv, delimiter=";"))
 
-resultados = open("resultados/genetic.csv", "w")
+resultados = open("resultados/treino_genetic.csv", "w")
 resultados.write("nome;tamanho_populacao;taxa_crossover;taxa_mutacao;tempo;estado;valor;tamanho\n")
 
 for tamanho_populacao in parametros_tamanho_populacao:
