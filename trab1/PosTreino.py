@@ -66,22 +66,30 @@ def MelhorCombinacaoHiperparametros(arquivo, parametros):
     resultados = HiperResultados(arquivo, parametros)
     medias = MediasHiperparametros(resultados)
 
-    # MELHOR HIPERPARAMETRO
     melhor_combinacao = max(medias.items(), key=lambda e: e[1])
 
     return melhor_combinacao[0]
 
 if __name__ == '__main__':
+    parametros = {
+        'BS': ['m'],
+        'SA': ['to', 'alpha', 'iteracoes'],
+        'GE': ['tamanho_populacao', 'taxa_crossover', 'taxa_mutacao'],
+        'GR': ['iteracoes', 'm']
+    }
+
     algoritmos = {
-        'BS': HiperResultados('resultados/treino_beamsearch.csv', ['m']),
-        'SA': HiperResultados('resultados/treino_simulatedannealing.csv', ['to', 'alpha', 'iteracoes']),
-        'GE': HiperResultados('resultados/treino_genetic.csv', ['tamanho_populacao', 'taxa_crossover', 'taxa_mutacao']),
-        'GR': HiperResultados('resultados/treino_grasp.csv', ['iteracoes', 'm'])
+        'BS': HiperResultados('resultados/treino_beamsearch.csv', parametros['BS']),
+        'SA': HiperResultados('resultados/treino_simulatedannealing.csv', parametros['SA']),
+        'GE': HiperResultados('resultados/treino_genetic.csv', parametros['GE']),
+        'GR': HiperResultados('resultados/treino_grasp.csv', parametros['GR'])
     }
 
     algoritmo = algoritmos[sys.argv[1]]
 
-    ordenado = list(MediasHiperparametros(algoritmo).items())
+    medias_hiperparametros = MediasHiperparametros(algoritmo)
+    
+    ordenado = list(medias_hiperparametros.items())
     ordenado.sort(key=lambda e: e[1], reverse=True)
     ordenado = ordenado[:10]
 
@@ -92,6 +100,13 @@ if __name__ == '__main__':
         k = each[0]
         frame_normalizado[k] = list(map(lambda e: e[0], algoritmo[k]))
         frame_tempo[k] = list(map(lambda e: e[1], algoritmo[k]))
+
+    melhor_combinacao = max(medias_hiperparametros.items(), key=lambda e: e[1])
+    melhor_combinacao = zip(parametros[sys.argv[1]], melhor_combinacao[0].split(';'))
+    melhor_combinacao = list(melhor_combinacao)
+    melhor_combinacao = map(lambda e: f"{e[0]}={e[1]}", melhor_combinacao)
+
+    print(', '.join(melhor_combinacao))
 
     sns.boxplot(data=frame_normalizado)
     plt.show()
