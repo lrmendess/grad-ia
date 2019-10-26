@@ -101,8 +101,6 @@ if __name__ == '__main__':
         frame_normalizado[k] = list(map(lambda e: e[0], algoritmo[k]))
         frame_tempo[k] = list(map(lambda e: e[1], algoritmo[k]))
 
-    print(frame_normalizado)
-
     melhor_combinacao = max(medias_hiperparametros.items(), key=lambda e: e[1])
     melhor_combinacao = zip(parametros[sys.argv[1]], melhor_combinacao[0].split(';'))
     melhor_combinacao = list(melhor_combinacao)
