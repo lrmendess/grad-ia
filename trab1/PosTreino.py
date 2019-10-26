@@ -8,12 +8,12 @@ from statistics import mean
 
 def HiperResultados(nome_arquivo, hiperparametros):
     with open(nome_arquivo) as arquivo_csv:
-        resultados_teste = list(DictReader(arquivo_csv, delimiter=';'))
+        resultados_treino = list(DictReader(arquivo_csv, delimiter=';'))
 
     # GROUP BY PROBLEMAS
     problemas = {}
 
-    for linha in resultados_teste:
+    for linha in resultados_treino:
         nome, valor, tempo = linha['nome'], float(linha['valor']), float(linha['tempo'])
         
         chave = [linha[p] for p in hiperparametros]
@@ -36,7 +36,7 @@ def HiperResultados(nome_arquivo, hiperparametros):
     # GROUP BY HIPERPARAMETROS
     parametros = {}
 
-    for linha in resultados_teste:
+    for linha in resultados_treino:
         chave = [linha[p] for p in hiperparametros]
         chave = ';'.join(chave)
 
@@ -101,11 +101,14 @@ if __name__ == '__main__':
         frame_normalizado[k] = list(map(lambda e: e[0], algoritmo[k]))
         frame_tempo[k] = list(map(lambda e: e[1], algoritmo[k]))
 
+    print(frame_normalizado)
+
     melhor_combinacao = max(medias_hiperparametros.items(), key=lambda e: e[1])
     melhor_combinacao = zip(parametros[sys.argv[1]], melhor_combinacao[0].split(';'))
     melhor_combinacao = list(melhor_combinacao)
     melhor_combinacao = map(lambda e: f"{e[0]}={e[1]}", melhor_combinacao)
 
+    print('Melhor combinação de hiperparametros:')
     print(', '.join(melhor_combinacao))
 
     sns.boxplot(data=frame_normalizado)
