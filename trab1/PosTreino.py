@@ -110,7 +110,13 @@ if __name__ == '__main__':
     print(', '.join(melhor_combinacao))
 
     sns.boxplot(data=frame_normalizado)
+    plt.title(f"{sys.argv[1]}: Melhores Resultados Normalizados")
+    plt.xlabel(f"Parâmetros {';'.join(parametros[sys.argv[1]])}")
+    plt.ylabel("Valor Normalizado")
     plt.show()
 
+    plt.title(f"{sys.argv[1]}: Tempos")
+    plt.xlabel(f"Parâmetros {';'.join(parametros[sys.argv[1]])}")
+    plt.ylabel("Tempo")
     sns.boxplot(data=frame_tempo)
     plt.show()

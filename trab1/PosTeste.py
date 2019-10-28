@@ -130,6 +130,11 @@ problemas = Problemas('problemas/teste.csv')
 lista_ranking_absoluto = [list(zip(['hc', 'bs', 'sa', 'ge', 'gr'], pv)) for pv in p_valores]
 lista_ranking_absoluto = [sorted(r, key=lambda e: e[1], reverse=True) for r in lista_ranking_absoluto]
 
+index = 0
+for p in problemas:
+    print(f"{p}: {lista_ranking_absoluto[index]}")
+    index += 1
+
 ranking_absoluto = {'hc': 0, 'bs': 0, 'sa': 0, 'ge': 0, 'gr': 0}
 
 for each in lista_ranking_absoluto:
@@ -149,11 +154,22 @@ ranking_absoluto['gr'] /= len(lista_ranking_absoluto)
 print("====== RANKING ABSOLUTO ======")
 print(list(sorted(ranking_absoluto.items(), key=lambda e: e[1])), end='\n\n')
 
+
+
+lista_ranking_normalizado = [list(zip(['hc', 'bs', 'sa', 'ge', 'gr'], pv)) for pv in p_normalizados]
+lista_ranking_normalizado = [sorted(r, key=lambda e: e[1], reverse=True) for r in lista_ranking_normalizado]
+
+index = 0
+for p in problemas:
+    print(f"{p}: {lista_ranking_normalizado[index]}")
+    index += 1
+
 # RANKING POR RESULTADO NORMALIZADO
 print("====== RANKING NORMALIZADO ======")
 ranking_normalizado = frame_normalizados['media'].tolist()
 ranking_normalizado = list(zip(['hc', 'bs', 'sa', 'ge', 'gr'], ranking_normalizado))
 ranking_normalizado.sort(key=lambda e: e[1], reverse=True)
+
 print(ranking_normalizado)
 
 # BOXPLOTS VALORES NORMALIZADOS
@@ -165,7 +181,10 @@ box_normalizados['sa'] = sa['normalizado'].tolist()
 box_normalizados['ge'] = ge['normalizado'].tolist()
 box_normalizados['gr'] = gr['normalizado'].tolist()
 
-sns.boxplot(data=box_normalizados)
+sns.boxplot(data=box_normalizados, showmeans=True)
+plt.title("Resultados Normalizados das Metaheuristicas")
+plt.xlabel("Algoritmo")
+plt.ylabel("Valor Normalizado")
 plt.show()
 
 # BOXPLOTS TEMPOS
@@ -177,5 +196,8 @@ box_tempos['sa'] = sa['tempo'].tolist()
 box_tempos['ge'] = ge['tempo'].tolist()
 box_tempos['gr'] = gr['tempo'].tolist()
 
-sns.boxplot(data=box_tempos)
+plt.title("Tempos de Execução das Metaheuristicas")
+plt.xlabel("Algoritmo")
+plt.ylabel("Tempo")
+sns.boxplot(data=box_tempos, showmeans=True)
 plt.show()
