@@ -67,4 +67,8 @@ for dataset_name, frame in dataset_frames.items():
         pass
 
     plt.savefig(f"boxplots/part1/{dataset_name}_part1.png")
-    plt.close()
+    
+    plt.cla()
+    plt.clf()
+
+plt.close()
