@@ -6,8 +6,6 @@ warnings.warn = warn
 
 import pandas as pd
 
-from utils import accuracy
-
 from sklearn import datasets, preprocessing
 from sklearn.model_selection import train_test_split
 from sklearn.utils.multiclass import unique_labels
@@ -96,7 +94,6 @@ if __name__ == '__main__':
     oner.fit(x_train, y_train)
 
     predict = oner.predict(x_test)
-    accuracy = accuracy(predict, y_test)
 
     print(f"Predict: {predict}")
-    print(f"\nAccuracy: {accuracy}")
+    

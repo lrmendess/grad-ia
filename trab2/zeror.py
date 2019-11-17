@@ -4,8 +4,6 @@ def warn(*args, **kwargs):
 import warnings
 warnings.warn = warn
 
-from utils import accuracy
-
 from sklearn import datasets
 from sklearn.model_selection import train_test_split
 from sklearn.base import BaseEstimator, ClassifierMixin
@@ -31,7 +29,6 @@ if __name__ == '__main__':
     zr.fit(x_train, y_train)
 
     predict = zr.predict(x_test)
-    accuracy = accuracy(predict, y_test)
 
     print(f"Predict: {predict}")
-    print(f"\nAccuracy: {accuracy}")
+    

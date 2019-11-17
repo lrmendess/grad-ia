@@ -10,7 +10,6 @@ import pandas as pd
 import os
 
 from oner_prob import OneRProb
-from utils import accuracy
 from zeror import ZeroR
 from oner import OneR
 

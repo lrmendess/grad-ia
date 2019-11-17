@@ -6,7 +6,6 @@ warnings.warn = warn
 
 import pandas as pd
 
-from utils import accuracy
 from random import uniform, choice
 
 from sklearn import datasets, preprocessing
@@ -113,7 +112,6 @@ if __name__ == '__main__':
     oner.fit(x_train, y_train)
 
     predict = oner.predict(x_test)
-    accuracy = accuracy(predict, y_test)
-
+    
     print(f"Predict: {predict}")
-    print(f"\nAccuracy: {accuracy}")
+    
