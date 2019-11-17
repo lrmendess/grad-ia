@@ -11,8 +11,9 @@ from utils import accuracy
 from sklearn import datasets, preprocessing
 from sklearn.model_selection import train_test_split
 from sklearn.utils.multiclass import unique_labels
+from sklearn.base import BaseEstimator, ClassifierMixin
 
-class OneR():
+class OneR(BaseEstimator, ClassifierMixin):
     def fit(self, x_train, y_train):
         self.class_  = unique_labels(y_train)
         self.x_train = x_train
@@ -77,9 +78,9 @@ def best_predict_table_index(x_train, y_train, candidates):
         for element in x_train[:,cadidate_index]:
             predict.append(candidate[element])
             
-        equals = zip(predict, y_test)
+        equals = zip(predict, y_train)
         equals = filter(lambda x: x[0] == x[1], equals)
-        accuracy = len(list(equals)) / len(list(y_test))
+        accuracy = len(list(equals)) / len(list(y_train))
 
         if accuracy > best_accuracy:
             best_accuracy = accuracy

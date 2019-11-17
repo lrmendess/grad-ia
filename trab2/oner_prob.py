@@ -12,8 +12,9 @@ from random import uniform, choice
 from sklearn import datasets, preprocessing
 from sklearn.model_selection import train_test_split
 from sklearn.utils.multiclass import unique_labels
+from sklearn.base import BaseEstimator, ClassifierMixin
 
-class OneR():
+class OneRProb(BaseEstimator, ClassifierMixin):
     def fit(self, x_train, y_train):
         self.class_  = unique_labels(y_train)
         self.x_train = x_train
@@ -43,7 +44,10 @@ class OneR():
         bins = preprocessing.KBinsDiscretizer(n_bins=bins, encode='ordinal', strategy='uniform').fit(x_test).transform(x_test)
 
         for element in bins[:,self.predict_table_index]:
-            predict.append(self.predict_table[element])
+            if element in self.predict_table:
+                predict.append(self.predict_table[element])
+            else:
+                predict.append(choice(list(self.predict_table.items()))[1])
 
         return predict
 
@@ -77,9 +81,9 @@ def best_predict_table_index(x_train, y_train, candidates):
         for element in x_train[:,candidate_index]:
             predict.append(candidate[element])
             
-        equals = zip(predict, y_test)
+        equals = zip(predict, y_train)
         equals = filter(lambda x: x[0] == x[1], equals)
-        accuracy = len(list(equals)) / len(list(y_test))
+        accuracy = len(list(equals)) / len(list(y_train))
 
         accuracy_collection.append((candidate_index, accuracy))
 
@@ -105,7 +109,7 @@ if __name__ == '__main__':
     iris = datasets.load_iris()
     x_train, x_test, y_train, y_test = train_test_split(iris.data, iris.target, test_size=0.4, random_state=0)
 
-    oner = OneR()
+    oner = OneRProb()
     oner.fit(x_train, y_train)
 
     predict = oner.predict(x_test)

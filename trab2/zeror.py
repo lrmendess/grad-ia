@@ -8,10 +8,11 @@ from utils import accuracy
 
 from sklearn import datasets
 from sklearn.model_selection import train_test_split
+from sklearn.base import BaseEstimator, ClassifierMixin
 
 from collections import Counter
 
-class ZeroR():
+class ZeroR(BaseEstimator, ClassifierMixin):
     def __init__(self):
         self.class_ = 0
 
@@ -19,8 +20,8 @@ class ZeroR():
         group_by = Counter(y_train)
         self.class_ = max(group_by.items(), key=lambda x: x[1])[0]
 
-    def predict(self, x_test, y_test):
-        return [self.class_] * len(y_test)
+    def predict(self, x_test):
+        return [self.class_] * len(x_test)
 
 if __name__ == '__main__':
     iris = datasets.load_iris()
@@ -29,7 +30,7 @@ if __name__ == '__main__':
     zr = ZeroR()
     zr.fit(x_train, y_train)
 
-    predict = zr.predict(x_test, y_test)
+    predict = zr.predict(x_test)
     accuracy = accuracy(predict, y_test)
 
     print(f"Predict: {predict}")
