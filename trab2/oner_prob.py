@@ -30,10 +30,10 @@ class OneRProb(BaseEstimator, ClassifierMixin):
 
         for i in range(iterations):
             cross = pd.crosstab(bins[:,i], self.y_train)
-            rules = gen_table_rules(cross)
+            rules = self.gen_table_rules(cross)
             self.candidates.append(rules)
 
-        self.predict_table_index = best_predict_table_index(bins, self.y_train, self.candidates)
+        self.predict_table_index = self.best_predict_table_index(bins, self.y_train, self.candidates)
         self.predict_table = self.candidates[self.predict_table_index]
 
     def predict(self, x_test):
@@ -50,59 +50,53 @@ class OneRProb(BaseEstimator, ClassifierMixin):
 
         return predict
 
-def gen_table_rules(df):
-    table = dict()
-    
-    for df_row_index, df_row in df.iterrows():
-        df_column_index = best_column_index(df_row)
-        df_column_name = df.columns[df_column_index]
-        table[df_row_index] = df_column_name
+    def gen_table_rules(self, df):
+        table = dict()
+        
+        for df_row_index, df_row in df.iterrows():
+            df_column_index = self.best_column_index(df_row)
+            df_column_name = df.columns[df_column_index]
+            table[df_row_index] = df_column_name
 
-    return table
+        return table
 
-def best_column_index(row):
-    best_column_index = 0
-    max_value = 0
+    def best_column_index(self, row):
+        sum_ = sum([r for r in row])
+        reasons = [(i, r / sum_) for i, r in enumerate(row)]
+        reasons.sort(key=lambda e: e[1], reverse=True)
 
-    for index, element in enumerate(row):
-        if element > max_value:
-            max_value = element
-            best_column_index = index
+        roulette, sum_ = list(), 0
 
-    return best_column_index
+        for r in reasons:
+            sum_ += r[1]
+            roulette.append((r[0], sum_))
 
-def best_predict_table_index(x_train, y_train, candidates):
-    accuracy_collection = list()
+        prob = uniform(0, 1)
 
-    for candidate_index, candidate in enumerate(candidates):
-        predict = list()
+        for r in roulette:
+            if prob <= r[1]:
+                return r[0]
 
-        for element in x_train[:,candidate_index]:
-            predict.append(candidate[element])
-            
-        equals = zip(predict, y_train)
-        equals = filter(lambda x: x[0] == x[1], equals)
-        accuracy = len(list(equals)) / len(list(y_train))
+        return choice([x for x in range(len(row))])
 
-        accuracy_collection.append((candidate_index, accuracy))
+    def best_predict_table_index(self, x_train, y_train, candidates):
+        best_candidate_index = 0
+        best_accuracy = 0.0
 
-    sum_ = sum([e[1] for e in accuracy_collection])
-    reasons = [(e[0], e[1] / sum_) for e in accuracy_collection]
-    reasons.sort(key=lambda x: x[1], reverse=True)
+        for cadidate_index, candidate in enumerate(candidates):
+            predict = list()
 
-    roulette, sum_ = list(), 0
+            for element in x_train[:,cadidate_index]:
+                predict.append(candidate[element])
+                
+            equals = filter(lambda x: x[0] == x[1], zip(predict, y_train))
+            accuracy = len(list(equals)) / len(list(y_train))
 
-    for r in reasons:
-        sum_ += r[1]
-        roulette.append((r[0], sum_))
+            if accuracy >= best_accuracy:
+                best_accuracy = accuracy
+                best_candidate_index = cadidate_index
 
-    prob = uniform(0, 1)
-
-    for r in roulette:
-        if prob <= r[1]:
-            return r[0]
-
-    return choice(candidates)
+        return best_candidate_index
 
 if __name__ == '__main__':
     iris = datasets.load_iris()
@@ -112,6 +106,7 @@ if __name__ == '__main__':
     oner.fit(x_train, y_train)
 
     predict = oner.predict(x_test)
-    
+    accuracy = oner.score(x_test, y_test)
+
     print(f"Predict: {predict}")
-    
+    print(f"Accuracy: {accuracy}")

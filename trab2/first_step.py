@@ -46,7 +46,7 @@ for dataset_name, dataset in datasets.items():
         dataset_frames[dataset_name].loc[classifier_name] = [scores.mean(), scores.std(), scores]
 
 for dataset_name, frame in dataset_frames.items():
-    print(f"{dataset_name} (boxplots/part1/{dataset_name}_part1.png)")
+    print(dataset_name)
     print(frame, end='\n\n')
 
     boxplot = pd.DataFrame()
@@ -62,6 +62,7 @@ for dataset_name, frame in dataset_frames.items():
 
     try:
         os.makedirs('boxplots/part1')
+        os.makedirs('csv/part1')
     except FileExistsError:
         pass
 
@@ -69,5 +70,8 @@ for dataset_name, frame in dataset_frames.items():
     
     plt.cla()
     plt.clf()
+    
+    csv_table = frame.drop(['scores'], axis=1)
+    csv_table.to_csv(f"csv/part1/{dataset_name}_part1.csv")
 
 plt.close()

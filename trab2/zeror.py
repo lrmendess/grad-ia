@@ -29,6 +29,7 @@ if __name__ == '__main__':
     zr.fit(x_train, y_train)
 
     predict = zr.predict(x_test)
+    accuracy = zr.score(x_test, y_test)
 
     print(f"Predict: {predict}")
-    
+    print(f"Accuracy: {accuracy}")
