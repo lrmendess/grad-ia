@@ -10,6 +10,7 @@ import pandas as pd
 import os
 
 from oner_prob import OneRProb
+from centroid import Centroid
 from zeror import ZeroR
 from oner import OneR
 
@@ -28,7 +29,8 @@ classifiers = {
     'zeror': ZeroR(),
     'oner': OneR(),
     'oner_prob': OneRProb(),
-    'gaussian': GaussianNB()
+    'gaussian': GaussianNB(),
+    'centroid': Centroid()
 }
 
 std_frame = pd.DataFrame(index=classifiers.keys(), columns=['media', 'dp', 'scores'])
