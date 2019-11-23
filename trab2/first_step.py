@@ -9,6 +9,7 @@ import seaborn as sns
 import pandas as pd
 import os
 
+from centroid_oner import CentroidOneR
 from oner_prob import OneRProb
 from centroid import Centroid
 from zeror import ZeroR
@@ -29,8 +30,9 @@ classifiers = {
     'zeror': ZeroR(),
     'oner': OneR(),
     'oner_prob': OneRProb(),
-    'gaussian': GaussianNB(),
-    'centroid': Centroid()
+    'centroid': Centroid(),
+    'centroid_oner': CentroidOneR(),
+    'gaussian': GaussianNB()
 }
 
 std_frame = pd.DataFrame(index=classifiers.keys(), columns=['media', 'dp', 'scores'])
