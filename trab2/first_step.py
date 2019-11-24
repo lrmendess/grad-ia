@@ -23,15 +23,15 @@ datasets = {
     'iris': datasets.load_iris(),
     'digits': datasets.load_digits(),
     'wine': datasets.load_wine(),
-    'breast_cancer': datasets.load_breast_cancer()
+    'breast-cancer': datasets.load_breast_cancer()
 }
 
 classifiers = {
     'zeror': ZeroR(),
     'oner': OneR(),
-    'oner_prob': OneRProb(),
+    'oner-prob': OneRProb(),
     'centroid': Centroid(),
-    'centroid_oner': CentroidOneR(),
+    'centroid-oner': CentroidOneR(),
     'gaussian': GaussianNB()
 }
 
@@ -41,7 +41,7 @@ dataset_frames = {
     'iris':             std_frame.copy(),
     'digits':           std_frame.copy(),
     'wine':             std_frame.copy(),
-    'breast_cancer':    std_frame.copy()
+    'breast-cancer':    std_frame.copy()
 }
 
 for dataset_name, dataset in datasets.items():
@@ -70,12 +70,12 @@ for dataset_name, frame in dataset_frames.items():
     except FileExistsError:
         pass
 
-    plt.savefig(f"boxplots/part1/{dataset_name}_part1.png")
+    plt.savefig(f"boxplots/part1/{dataset_name}-part1.png")
     
     plt.cla()
     plt.clf()
     
     csv_table = frame.drop(['scores'], axis=1)
-    csv_table.to_csv(f"csv/part1/{dataset_name}_part1.csv")
+    csv_table.to_csv(f"csv/part1/{dataset_name}-part1.csv")
 
 plt.close()

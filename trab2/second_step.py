@@ -26,7 +26,7 @@ datasets = {
     'iris': datasets.load_iris(),
     'digits': datasets.load_digits(),
     'wine': datasets.load_wine(),
-    'breast_cancer': datasets.load_breast_cancer()
+    'breast-cancer': datasets.load_breast_cancer()
 }
 
 classifiers = {
@@ -49,7 +49,7 @@ dataset_frames = {
     'iris':             std_frame.copy(),
     'digits':           std_frame.copy(),
     'wine':             std_frame.copy(),
-    'breast_cancer':    std_frame.copy()
+    'breast-cancer':    std_frame.copy()
 }
 
 for dataset_name, dataset in datasets.items():
@@ -79,12 +79,12 @@ for dataset_name, frame in dataset_frames.items():
     except FileExistsError:
         pass
 
-    plt.savefig(f"boxplots/part2/{dataset_name}_part2.png")
+    plt.savefig(f"boxplots/part2/{dataset_name}-part2.png")
     
     plt.cla()
     plt.clf()
 
     csv_table = frame.drop(['scores'], axis=1)
-    csv_table.to_csv(f"csv/part2/{dataset_name}_part2.csv")
+    csv_table.to_csv(f"csv/part2/{dataset_name}-part2.csv")
 
 plt.close()
