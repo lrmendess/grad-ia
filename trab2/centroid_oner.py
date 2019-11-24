@@ -36,37 +36,36 @@ class CentroidOneR(BaseEstimator, ClassifierMixin):
         self.predict_table_index = self.best_predict_table_index(bins, self.y_train, self.candidates)
         self.predict_table = self.candidates[self.predict_table_index]
 
-        # Centroide
         selected_column = x_train[:,self.predict_table_index]
-        class_lists = dict()
+        collection_of_classes = dict()
         self.rule_set = dict()
 
         for k in self.class_:
-            class_lists[k] = list()
+            collection_of_classes[k] = list()
 
-        for i in range(len(selected_column)):
-            class_lists[y_train[i]].append(selected_column[i])
+        for index, element in enumerate(selected_column):
+            collection_of_classes[y_train[index]].append(element)
 
-        for key, value in class_lists.items():
+        for key, value in collection_of_classes.items():
             self.rule_set[key] = sum(value) / len(value)
 
     def predict(self, x_test):
         predict = []
 
-        x_test = x_test[:,self.predict_table_index]
+        x_test_column = x_test[:,self.predict_table_index]
 
-        for i in range (len(x_test)):
-            opt_dist = math.inf
-            opt_class = 0
+        for element in x_test_column:
+            best_class = 0
+            best_distance = math.inf
             
             for key, value in self.rule_set.items():
-                temp_dist = distance.euclidean(x_test[i], value)
+                d = distance.euclidean(element, value)
+                
+                if(best_distance >= d):
+                    best_class = key
+                    best_distance = d
 
-                if(opt_dist >= temp_dist):
-                    opt_class = key
-                    opt_dist = temp_dist
-
-            predict.append(opt_class)
+            predict.append(best_class)
 
         return predict
 
@@ -111,7 +110,7 @@ class CentroidOneR(BaseEstimator, ClassifierMixin):
         return best_candidate_index
 
 if __name__ == '__main__':
-    iris = datasets.load_iris()
+    iris = datasets.load_wine()
     x_train, x_test, y_train, y_test = train_test_split(iris.data, iris.target, test_size=0.4, random_state=0)
 
     centroid_oner = CentroidOneR()

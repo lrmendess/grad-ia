@@ -9,8 +9,8 @@ import pandas as pd
 from random import uniform, choice
 
 from sklearn import datasets, preprocessing
-from sklearn.model_selection import train_test_split
 from sklearn.utils.multiclass import unique_labels
+from sklearn.model_selection import train_test_split
 from sklearn.base import BaseEstimator, ClassifierMixin
 
 class OneRProb(BaseEstimator, ClassifierMixin):

@@ -4,51 +4,47 @@ def warn(*args, **kwargs):
 import warnings
 warnings.warn = warn
 
-from sklearn import datasets, preprocessing
-from sklearn.model_selection import train_test_split
-from sklearn.utils.multiclass import unique_labels
-from sklearn.base import BaseEstimator, ClassifierMixin
-import pandas as pd
+import math
 import numpy as np
+import pandas as pd
+
 from collections import Counter
 from scipy.spatial import distance
-import math
+from sklearn import datasets, preprocessing
+from sklearn.utils.multiclass import unique_labels
+from sklearn.model_selection import train_test_split
+from sklearn.base import BaseEstimator, ClassifierMixin
 
 class Centroid(BaseEstimator, ClassifierMixin):
-	
-	def __init__(self):
-		pass
-
 	def fit(self, x_train, y_train):
 		self.centroids = dict()
+
 		group_by = Counter(y_train)
-		
-		# Construindo dict
-		for key, _ in group_by.items():
-			self.centroids[key] = np.zeros(len(x_train[0]))
 
-		# Somando todas as distancias
-		for i in range (0, len(x_train)):
-			self.centroids[y_train[i]] += x_train[i]
+		for key, value in group_by.items():
+			self.centroids[key] = [0] * len(x_train[0])
 
-		# Dividindo pelo numero de items
+		for index, element in enumerate(x_train):
+			self.centroids[y_train[index]] += element
+
 		for key, value in self.centroids.items():
 			self.centroids[key] = value / group_by[key]
 
 	def predict(self, x_train):
 		predict = []
 
-		for i in range (len(x_train)):
-			opt_dist = math.inf
-			opt_class = 0
+		for element in x_train:
+			best_class = 0
+			best_distance = math.inf
 			
 			for key, value in self.centroids.items():
-				temp_dist = distance.euclidean(x_train[i], value)
-				if(opt_dist >= temp_dist):
-					opt_class = key
-					opt_dist = temp_dist
+				d = distance.euclidean(element, value)
 
-			predict.append(opt_class)
+				if(best_distance >= d):
+					best_class = key
+					best_distance = d
+
+			predict.append(best_class)
 
 		return predict
 

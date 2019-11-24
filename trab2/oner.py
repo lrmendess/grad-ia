@@ -7,8 +7,8 @@ warnings.warn = warn
 import pandas as pd
 
 from sklearn import datasets, preprocessing
-from sklearn.model_selection import train_test_split
 from sklearn.utils.multiclass import unique_labels
+from sklearn.model_selection import train_test_split
 from sklearn.base import BaseEstimator, ClassifierMixin
 
 class OneR(BaseEstimator, ClassifierMixin):
